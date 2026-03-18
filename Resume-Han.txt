@@ -1,7 +1,6 @@
 HAN JIANG
 North Sydney, NSW 2060
-LinkedIn: https://www.linkedin.com/in/han0601
-Mobile: 0451216830 | Email: hanburgerjiang@gmail.com
+LinkedIn: https://www.linkedin.com/in/han0601 | Mobile: 0451216830 | Email: hanburgerjiang@gmail.com
 
 PROFESSIONAL SUMMARY
 Detail-oriented and technically strong professional transitioning into a Junior Data Analyst role, with 10+ years of experience across ICT systems, database environments, technical support, and project coordination. Experienced in working with SQL, Python, Excel, relational databases, and performance data to support reporting, problem solving, and operational decision-making. Comfortable cleaning and validating data, analysing trends, producing reports, and communicating findings clearly to both technical and non-technical stakeholders. Currently strengthening analytics capability through formal IT study and CompTIA Data+ preparation.
@@ -35,10 +34,8 @@ PRINCE2 Practitioner, Sep 2022
 PMP, Aug 2018
 
 PROFESSIONAL EXPERIENCE
-
 Shanghai Ideal Information Industry (Group) Co., Ltd.
-ICT System Analyst / Project Coordinator
-Beijing, China | Mar 2020 – May 2023
+ICT System Analyst / Project Coordinator | Beijing, China | Mar 2020 – May 2023
 • Gathered business and technical requirements from stakeholders and translated them into practical system, reporting and delivery solutions.
 • Extracted, reviewed and interpreted operational data to support performance tracking, project reporting and decision-making.
 • Used SQL, Python and database tools to work with structured and semi-structured data across Oracle and MongoDB environments.
@@ -49,8 +46,7 @@ Beijing, China | Mar 2020 – May 2023
 • Worked closely with cross-functional teams to coordinate implementations, deployments and ongoing process improvements.
 
 Beijing KeDong Electric Power Control System Co., Ltd.
-Senior Systems Engineer
-Beijing, China | Jan 2016 – Jan 2020
+Senior Systems Engineer | Beijing, China | Jan 2016 – Jan 2020
 • Analysed system and database performance data to identify issues, improve efficiency and support a better user experience.
 • Performed SQL optimisation, reviewed database structures, and improved I/O efficiency and overall system performance.
 • Managed and prioritised tickets through ITSM tools while maintaining service standards under SLAs.
@@ -60,8 +56,7 @@ Beijing, China | Jan 2016 – Jan 2020
 • Collaborated with project managers, engineers and users to resolve issues and support product delivery.
 
 Sinosoft Co., Ltd.
-Systems Engineer
-Beijing, China | Jan 2011 – Dec 2015
+Systems Engineer | Beijing, China | Jan 2011 – Dec 2015
 • Supported requirements analysis, data statistics and functional design documentation for SaaS systems.
 • Assisted with analysing system data and user issues to improve functionality, performance and service quality.
 • Worked with Linux, relational databases and middleware platforms including WebLogic, Apache and Tomcat.
@@ -70,8 +65,7 @@ Beijing, China | Jan 2011 – Dec 2015
 • Delivered user training on system operation and maintenance, helping improve adoption and day-to-day use.
 
 Chemist Warehouse
-Storeperson / Customer Service Support
-Mar 2025 – Dec 2025
+Storeperson / Customer Service Support | Mar 2025 – Dec 2025
 • Supported day-to-day warehouse operations including stock control, order preparation and administrative tasks.
 • Assisted with inbound customer enquiries and email communication in a fast-paced retail environment.
 • Helped maintain records relating to invoicing, receipting and stock handling.
