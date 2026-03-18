@@ -3,7 +3,7 @@ North Sydney, NSW 2060
 LinkedIn: https://www.linkedin.com/in/han0601 | Mobile: 0451216830 | Email: hanburgerjiang@gmail.com
 
 PROFESSIONAL SUMMARY
-I’m a technically minded professional with more than 10 years of experience across ICT support, systems work, databases and project coordination, and I’m now moving into data analytics. Over the years, I’ve worked with SQL, Python, Excel and database platforms to solve problems, support reporting, and help teams make better decisions. I’m comfortable working with data, spotting trends, improving processes, and explaining findings clearly to both technical and non-technical people. I’m also building on that experience through formal IT study and CompTIA Data+ preparation.
+I’m a technically minded professional with more than 10 years of experience across ICT support, systems, databases and project coordination, and I’m now looking to move into a Junior Data Analyst role. Over the years, I’ve used SQL, Python, Excel and database platforms to solve problems, support reporting and help teams make better decisions. I’m comfortable working with data, picking up trends, improving processes and explaining findings clearly to both technical and non-technical people. I’m also building on that experience through formal IT study and CompTIA Data+ preparation.
 
 CORE SKILLS
 • SQL querying and data extraction
@@ -37,11 +37,11 @@ PROFESSIONAL EXPERIENCE
 Shanghai Ideal Information Industry (Group) Co., Ltd.
 ICT System Analyst / Project Coordinator | Beijing, China | Mar 2020 – May 2023
 • Worked with stakeholders to understand business and technical needs, then helped turn those into practical system and reporting solutions.
-• Pulled together and reviewed operational data to support performance tracking, project reporting and day-to-day decisions.
+• Pulled together and reviewed operational data to support performance tracking, project reporting and everyday decision-making.
 • Used SQL, Python and database tools to work with data in Oracle and MongoDB environments.
 • Supported reporting and visualisation work using Power BI, Tableau and Python to highlight trends, issues and useful insights.
-• Monitored service and system performance and helped improve reliability, throughput and load balancing.
-• Prepared project plans, progress updates and risk reports so teams could track delivery more clearly.
+• Kept an eye on system and service performance and helped improve reliability, throughput and load balancing.
+• Prepared project plans, progress updates and risk reports so teams had a clear view of delivery.
 • Provided Level 1 and Level 2 support within SLA timeframes using ITIL-based processes and ServiceNow.
 • Worked closely with cross-functional teams during implementations, deployments and ongoing improvements.
 
