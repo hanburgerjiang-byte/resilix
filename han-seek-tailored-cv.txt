@@ -1,0 +1,88 @@
+HAN JIANG
+North Sydney, NSW 2060
+LinkedIn: https://www.linkedin.com/in/han0601
+Mobile: 0451216830 | Email: hanburgerjiang@gmail.com
+
+PROFESSIONAL SUMMARY
+Detail-oriented and technically strong professional transitioning into a Junior Data Analyst role, with 10+ years of experience across ICT systems, database environments, technical support, and project coordination. Experienced in working with SQL, Python, Excel, relational databases, and performance data to support reporting, problem solving, and operational decision-making. Comfortable cleaning and validating data, analysing trends, producing reports, and communicating findings clearly to both technical and non-technical stakeholders. Currently strengthening analytics capability through formal IT study and CompTIA Data+ preparation.
+
+CORE SKILLS
+• SQL querying and data extraction
+• Excel reporting, formulas, cleansing and validation
+• Python for data analysis and automation
+• Power BI and Tableau exposure
+• Dashboard and report preparation
+• Data cleaning, transformation and quality checks
+• Relational databases: Oracle and MySQL
+• NoSQL databases: MongoDB
+• Data warehousing and ETL concepts
+• Trend analysis and performance monitoring
+• Stakeholder communication and requirements gathering
+• Documentation, process improvement and collaboration
+
+TECHNICAL TOOLS
+SQL | Python | R | Excel | Power BI | Tableau | Oracle | MySQL | MongoDB | Linux | Windows | Azure | AWS | Docker | Kubernetes | Jira | ServiceNow | Zendesk | Google Analytics
+
+EDUCATION AND CERTIFICATIONS
+Certificate III in Information Technology, Charles Darwin University, 2024
+Bachelor of Computer Science, Beijing Information and Science Technology University, 2010
+CompTIA Data+ – Currently studying
+ABC Scrum Master, APMG International, Feb 2025
+PRINCE2 Agile Practitioner, Aug 2024
+AgilePM Foundation, Sep 2024
+ITIL 4 Foundation, Feb 2024
+PRINCE2 Practitioner, Sep 2022
+PMP, Aug 2018
+
+PROFESSIONAL EXPERIENCE
+
+Shanghai Ideal Information Industry (Group) Co., Ltd.
+ICT System Analyst / Project Coordinator
+Beijing, China | Mar 2020 – May 2023
+• Gathered business and technical requirements from stakeholders and translated them into practical system, reporting and delivery solutions.
+• Extracted, reviewed and interpreted operational data to support performance tracking, project reporting and decision-making.
+• Used SQL, Python and database tools to work with structured and semi-structured data across Oracle and MongoDB environments.
+• Supported reporting and visualisation activities using Power BI, Tableau and Python to help identify trends, exceptions and actionable insights.
+• Monitored system and service performance metrics and helped improve reliability, throughput and load balance.
+• Produced project plans, progress reports and risk updates, helping teams track milestones and delivery outcomes.
+• Provided Level 1 and Level 2 support within SLA timeframes using ITIL-based processes and ServiceNow.
+• Worked closely with cross-functional teams to coordinate implementations, deployments and ongoing process improvements.
+
+Beijing KeDong Electric Power Control System Co., Ltd.
+Senior Systems Engineer
+Beijing, China | Jan 2016 – Jan 2020
+• Analysed system and database performance data to identify issues, improve efficiency and support a better user experience.
+• Performed SQL optimisation, reviewed database structures, and improved I/O efficiency and overall system performance.
+• Managed and prioritised tickets through ITSM tools while maintaining service standards under SLAs.
+• Prepared documentation, reports and training materials to support technical teams and end users.
+• Monitored systems regularly, reviewed performance metrics, and carried out updates and maintenance as required.
+• Worked with cloud platforms including AWS and Azure in support of operational systems and reporting needs.
+• Collaborated with project managers, engineers and users to resolve issues and support product delivery.
+
+Sinosoft Co., Ltd.
+Systems Engineer
+Beijing, China | Jan 2011 – Dec 2015
+• Supported requirements analysis, data statistics and functional design documentation for SaaS systems.
+• Assisted with analysing system data and user issues to improve functionality, performance and service quality.
+• Worked with Linux, relational databases and middleware platforms including WebLogic, Apache and Tomcat.
+• Investigated software defects, supported root-cause analysis, and escalated complex issues where required.
+• Acted as a key contact for client requests, balancing technical troubleshooting with clear communication and service support.
+• Delivered user training on system operation and maintenance, helping improve adoption and day-to-day use.
+
+Chemist Warehouse
+Storeperson / Customer Service Support
+Mar 2025 – Dec 2025
+• Supported day-to-day warehouse operations including stock control, order preparation and administrative tasks.
+• Assisted with inbound customer enquiries and email communication in a fast-paced retail environment.
+• Helped maintain records relating to invoicing, receipting and stock handling.
+• Used SQL and Python for stock checking and simple process automation to support replenishment and inventory accuracy.
+
+ADDITIONAL EXPERIENCE
+ICT Event Coordinator – China 5G+ Industrial Internet Conference
+Wuhan, China | 2019, 2021, 2022
+• Coordinated with government bodies, industry partners and internal teams to support large-scale technology events.
+• Managed reporting, communication, planning and post-event documentation.
+• Oversaw technical support activities including live-streaming, systems setup and coordination of delivery teams.
+
+REFERENCES
+Available upon request.
