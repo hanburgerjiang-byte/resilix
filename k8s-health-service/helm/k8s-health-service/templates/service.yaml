@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "k8s-health-service.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "k8s-health-service.name" . }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ include "k8s-health-service.name" . }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: http
