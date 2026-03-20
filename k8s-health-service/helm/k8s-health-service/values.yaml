@@ -23,6 +23,8 @@ env:
   CHECK_TIMEOUT_SECONDS: "2.0"
   HTTP_CHECKS: ""
   TCP_CHECKS: ""
+  POSTGRES_DSN: ""
+  REDIS_URL: ""
 
 hpa:
   enabled: true
@@ -37,5 +39,10 @@ podDisruptionBudget:
 serviceMonitor:
   enabled: true
   interval: 15s
+  labels:
+    release: prometheus
+
+prometheusRule:
+  enabled: true
   labels:
     release: prometheus

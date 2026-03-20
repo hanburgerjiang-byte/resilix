@@ -1,0 +1,52 @@
+{{- if .Values.prometheusRule.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "k8s-health-service.fullname" . }}
+  labels:
+{{ toYaml .Values.prometheusRule.labels | indent 4 }}
+spec:
+  groups:
+    - name: k8s-health-service.rules
+      rules:
+        - alert: K8sHealthServiceNotReady
+          expr: app_ready == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: k8s-health-service is not ready
+            description: The service has been failing readiness checks for 5 minutes.
+        - alert: K8sHealthServiceHighLatencyP95
+          expr: histogram_quantile(0.95, sum(rate(app_http_request_duration_seconds_bucket[5m])) by (le, path)) > 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: High p95 latency detected
+            description: p95 request latency is above 1 second for 10 minutes.
+        - alert: K8sHealthServiceHighErrorRate
+          expr: sum(rate(app_http_requests_total{status_code=~"5.."}[5m])) / clamp_min(sum(rate(app_http_requests_total[5m])), 1) > 0.05
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: Elevated 5xx rate
+            description: More than 5% of responses are HTTP 5xx for 5 minutes.
+        - alert: K8sHealthServiceDependencyDown
+          expr: min(app_dependency_status) by (dependency, type) == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: Dependency down
+            description: A configured dependency check is failing.
+        - alert: K8sHealthServiceHighMemory
+          expr: app_process_resident_memory_bytes > 4e8
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: High process memory
+            description: Resident memory is above 400MB for 10 minutes.
+{{- end }}

@@ -3,9 +3,12 @@ from typing import Any, Dict, List, Optional
 import os
 import socket
 import time
+from urllib.parse import urlparse
 
+import asyncpg
 import httpx
 import psutil
+import redis.asyncio as redis
 from fastapi import FastAPI, Request, Response, status
 from fastapi.responses import JSONResponse, PlainTextResponse
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
@@ -17,11 +20,7 @@ HOSTNAME = socket.gethostname()
 START_TIME = time.time()
 READY = False
 
-REQUEST_COUNT = Counter(
-    "app_http_requests_total",
-    "Total HTTP requests",
-    ["method", "path", "status_code"],
-)
+REQUEST_COUNT = Counter("app_http_requests_total", "Total HTTP requests", ["method", "path", "status_code"])
 REQUEST_LATENCY = Histogram(
     "app_http_request_duration_seconds",
     "HTTP request latency",
@@ -32,6 +31,7 @@ APP_INFO = Gauge("app_info", "Application build info", ["name", "version", "host
 UP = Gauge("app_up", "Application up status")
 READY_GAUGE = Gauge("app_ready", "Application readiness status")
 DEPENDENCY_STATUS = Gauge("app_dependency_status", "Dependency health status", ["dependency", "type"])
+DEPENDENCY_LATENCY_MS = Gauge("app_dependency_latency_ms", "Dependency latency in ms", ["dependency", "type"])
 PROCESS_RESIDENT_MEMORY_BYTES = Gauge("app_process_resident_memory_bytes", "Resident memory")
 PROCESS_CPU_PERCENT = Gauge("app_process_cpu_percent", "CPU percent for process")
 
@@ -58,6 +58,8 @@ class DependencyChecker:
         self.timeout = float(os.getenv("CHECK_TIMEOUT_SECONDS", "2.0"))
         self.http_targets = self._parse_targets("HTTP_CHECKS")
         self.tcp_targets = self._parse_targets("TCP_CHECKS")
+        self.postgres_dsn = os.getenv("POSTGRES_DSN", "").strip()
+        self.redis_url = os.getenv("REDIS_URL", "").strip()
 
     @staticmethod
     def _parse_targets(env_name: str) -> List[Dict[str, str]]:
@@ -76,8 +78,7 @@ class DependencyChecker:
             items.append({"name": name.strip(), "target": target.strip()})
         return items
 
-    async def run(self) -> List[DependencyResult]:
-        results: List[DependencyResult] = []
+    async def _http_checks(self, results: List[DependencyResult]) -> None:
         async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True) as client:
             for item in self.http_targets:
                 start = time.perf_counter()
@@ -96,40 +97,69 @@ class DependencyChecker:
                         )
                     )
                 except Exception as exc:
-                    results.append(
-                        DependencyResult(
-                            name=item["name"],
-                            type="http",
-                            target=item["target"],
-                            status="fail",
-                            detail=str(exc),
-                        )
-                    )
+                    results.append(DependencyResult(name=item["name"], type="http", target=item["target"], status="fail", detail=str(exc)))
+
+    async def _tcp_checks(self, results: List[DependencyResult]) -> None:
         for item in self.tcp_targets:
             start = time.perf_counter()
-            host, port = item["target"].rsplit(":", 1)
             try:
+                host, port = item["target"].rsplit(":", 1)
                 with socket.create_connection((host, int(port)), timeout=self.timeout):
                     latency_ms = round((time.perf_counter() - start) * 1000, 2)
-                    results.append(
-                        DependencyResult(
-                            name=item["name"],
-                            type="tcp",
-                            target=item["target"],
-                            status="ok",
-                            latency_ms=latency_ms,
-                        )
-                    )
+                    results.append(DependencyResult(name=item["name"], type="tcp", target=item["target"], status="ok", latency_ms=latency_ms))
             except Exception as exc:
-                results.append(
-                    DependencyResult(
-                        name=item["name"],
-                        type="tcp",
-                        target=item["target"],
-                        status="fail",
-                        detail=str(exc),
-                    )
-                )
+                results.append(DependencyResult(name=item["name"], type="tcp", target=item["target"], status="fail", detail=str(exc)))
+
+    async def _postgres_check(self, results: List[DependencyResult]) -> None:
+        if not self.postgres_dsn:
+            return
+        start = time.perf_counter()
+        try:
+            conn = await asyncpg.connect(self.postgres_dsn, timeout=self.timeout)
+            try:
+                await conn.fetchval("SELECT 1")
+            finally:
+                await conn.close()
+            latency_ms = round((time.perf_counter() - start) * 1000, 2)
+            results.append(DependencyResult(name="postgres", type="postgres", target=self._redact_dsn(self.postgres_dsn), status="ok", latency_ms=latency_ms))
+        except Exception as exc:
+            results.append(DependencyResult(name="postgres", type="postgres", target=self._redact_dsn(self.postgres_dsn), status="fail", detail=str(exc)))
+
+    async def _redis_check(self, results: List[DependencyResult]) -> None:
+        if not self.redis_url:
+            return
+        start = time.perf_counter()
+        client = redis.from_url(self.redis_url, socket_connect_timeout=self.timeout, socket_timeout=self.timeout)
+        try:
+            await client.ping()
+            latency_ms = round((time.perf_counter() - start) * 1000, 2)
+            results.append(DependencyResult(name="redis", type="redis", target=self._redact_url(self.redis_url), status="ok", latency_ms=latency_ms))
+        except Exception as exc:
+            results.append(DependencyResult(name="redis", type="redis", target=self._redact_url(self.redis_url), status="fail", detail=str(exc)))
+        finally:
+            await client.aclose()
+
+    @staticmethod
+    def _redact_dsn(dsn: str) -> str:
+        parsed = urlparse(dsn)
+        host = parsed.hostname or "unknown"
+        port = parsed.port or 5432
+        db = parsed.path.lstrip("/") or "postgres"
+        return f"postgres://{host}:{port}/{db}"
+
+    @staticmethod
+    def _redact_url(raw_url: str) -> str:
+        parsed = urlparse(raw_url)
+        host = parsed.hostname or "unknown"
+        port = parsed.port or 6379
+        return f"redis://{host}:{port}"
+
+    async def run(self) -> List[DependencyResult]:
+        results: List[DependencyResult] = []
+        await self._http_checks(results)
+        await self._tcp_checks(results)
+        await self._postgres_check(results)
+        await self._redis_check(results)
         return results
 
 
@@ -173,11 +203,7 @@ def resource_snapshot() -> Dict[str, Any]:
     cpu_percent = process.cpu_percent(interval=None)
     PROCESS_RESIDENT_MEMORY_BYTES.set(memory)
     PROCESS_CPU_PERCENT.set(cpu_percent)
-    return {
-        "process": "ok",
-        "memory": {"resident_bytes": memory},
-        "cpu": {"percent": cpu_percent},
-    }
+    return {"process": "ok", "memory": {"resident_bytes": memory}, "cpu": {"percent": cpu_percent}}
 
 
 async def dependency_snapshot() -> Dict[str, Any]:
@@ -185,35 +211,22 @@ async def dependency_snapshot() -> Dict[str, Any]:
     if not results:
         return {"configured": False, "items": []}
     for item in results:
-        DEPENDENCY_STATUS.labels(dependency=item.name, type=item.type).set(1 if item.status == "ok" else 0)
-    return {
-        "configured": True,
-        "items": [item.model_dump() for item in results],
-    }
+        ok = 1 if item.status == "ok" else 0
+        DEPENDENCY_STATUS.labels(dependency=item.name, type=item.type).set(ok)
+        if item.latency_ms is not None:
+            DEPENDENCY_LATENCY_MS.labels(dependency=item.name, type=item.type).set(item.latency_ms)
+    return {"configured": True, "items": [item.model_dump() for item in results]}
 
 
 @app.get("/")
 async def root():
-    return {
-        "service": APP_NAME,
-        "version": APP_VERSION,
-        "endpoints": ["/healthz", "/readyz", "/metrics", "/metrics-summary", "/resilience"],
-    }
+    return {"service": APP_NAME, "version": APP_VERSION, "endpoints": ["/healthz", "/readyz", "/metrics", "/metrics-summary", "/resilience"]}
 
 
 @app.get("/healthz", response_model=HealthResponse)
 async def healthz():
-    checks = {
-        "resources": resource_snapshot(),
-        "dependencies": await dependency_snapshot(),
-    }
-    return HealthResponse(
-        status="ok",
-        uptime_seconds=round(time.time() - START_TIME, 2),
-        hostname=HOSTNAME,
-        version=APP_VERSION,
-        checks=checks,
-    )
+    checks = {"resources": resource_snapshot(), "dependencies": await dependency_snapshot()}
+    return HealthResponse(status="ok", uptime_seconds=round(time.time() - START_TIME, 2), hostname=HOSTNAME, version=APP_VERSION, checks=checks)
 
 
 @app.get("/readyz")
@@ -222,12 +235,7 @@ async def readyz():
     failing = [item.model_dump() for item in dependencies if item.status != "ok"]
     ready = READY and not failing
     READY_GAUGE.set(1 if ready else 0)
-    payload = {
-        "status": "ready" if ready else "not_ready",
-        "hostname": HOSTNAME,
-        "dependencies_checked": len(dependencies),
-        "failing_dependencies": failing,
-    }
+    payload = {"status": "ready" if ready else "not_ready", "hostname": HOSTNAME, "dependencies_checked": len(dependencies), "failing_dependencies": failing}
     if ready:
         return payload
     return JSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, content=payload)
@@ -236,6 +244,7 @@ async def readyz():
 @app.get("/metrics")
 async def metrics():
     resource_snapshot()
+    await dependency_snapshot()
     return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 

@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: k8s-health-service
+  namespace: observability
+spec:
+  groups:
+    - name: k8s-health-service.rules
+      rules:
+        - alert: K8sHealthServiceNotReady
+          expr: app_ready == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: k8s-health-service is not ready
+        - alert: K8sHealthServiceDependencyDown
+          expr: min(app_dependency_status) by (dependency, type) == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: Configured dependency check is failing

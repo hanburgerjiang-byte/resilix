@@ -1,6 +1,6 @@
 # k8s-health-service
 
-Production-grade FastAPI service for Kubernetes health monitoring, dependency checks, resilience guidance, and Prometheus metrics.
+Production-grade FastAPI service for Kubernetes health monitoring, dependency checks, resilience guidance, Prometheus metrics, alert rules, and Grafana dashboards.
 
 ## Features
 
@@ -10,22 +10,29 @@ Production-grade FastAPI service for Kubernetes health monitoring, dependency ch
 - `/metrics` for Prometheus scraping
 - `/metrics-summary` for quick bottleneck-oriented JSON output
 - `/resilience` for platform hardening recommendations
+- first-class Postgres and Redis checks
 - non-root container with stricter security defaults
 - Kubernetes manifests with Deployment, Service, PDB, HPA, NetworkPolicy, and ServiceMonitor
+- Helm templates for PrometheusRule alerts
+- Grafana dashboard JSON included
 
 ## Dependency checks
 
 Set optional env vars to check downstream services.
 
 - `HTTP_CHECKS` format: `name=https://url,name2=https://url2`
-- `TCP_CHECKS` format: `postgres=postgres.default.svc.cluster.local:5432,redis=redis.default.svc.cluster.local:6379`
+- `TCP_CHECKS` format: `service=host:port,service2=host:port`
+- `POSTGRES_DSN` format: `postgresql://user:password@host:5432/dbname`
+- `REDIS_URL` format: `redis://:password@host:6379/0`
 - `CHECK_TIMEOUT_SECONDS` default: `2.0`
 
 Example:
 
 ```bash
 export HTTP_CHECKS="api=https://example.com/healthz"
-export TCP_CHECKS="postgres=postgres.default.svc.cluster.local:5432"
+export TCP_CHECKS="broker=rabbitmq.default.svc.cluster.local:5672"
+export POSTGRES_DSN="postgresql://app:secret@postgres.default.svc.cluster.local:5432/app"
+export REDIS_URL="redis://:secret@redis.default.svc.cluster.local:6379/0"
 ```
 
 ## Run locally
@@ -47,36 +54,22 @@ docker build -t your-registry/k8s-health-service:latest .
 docker push your-registry/k8s-health-service:latest
 ```
 
-## Deploy raw manifests
-
-Update the image reference in `k8s.yaml`, then deploy:
-
-```bash
-kubectl apply -f k8s.yaml
-```
-
 ## Deploy with Helm
 
 ```bash
 helm upgrade --install k8s-health-service ./helm/k8s-health-service -n observability --create-namespace
 ```
 
-## Recommended platform additions
+Then set your real image and env values, for example with `--set` or a custom values file.
 
-For full production visibility, pair this with:
+## Included observability assets
 
-- Prometheus Operator or kube-prometheus-stack
-- Grafana dashboards
-- Alertmanager rules for latency, error rate, restart spikes, CPU throttling, memory pressure, and failed dependency checks
-- kube-state-metrics and node-exporter
+- Grafana dashboard: `grafana/k8s-health-service-dashboard.json`
+- Alert rules: `helm/k8s-health-service/templates/prometheusrule.yaml`
+
+## Suggested next integrations
+
+- kube-prometheus-stack
+- Alertmanager notification routes
 - ingress/TLS if you want external access
-
-## Suggested alerts
-
-- readiness failures > 0 for 5m
-- p95 latency above threshold for 10m
-- error rate above threshold for 5m
-- restart count increase
-- CPU throttling sustained
-- memory usage above 85% of limit
-- dependency status metric equals 0
+- OpenTelemetry tracing if you want cross-service latency breakdowns
